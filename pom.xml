@@ -14,6 +14,9 @@
         <module>item-service</module>
         <module>cart-service</module>
         <module>hm-api</module>
+        <module>user-service</module>
+        <!--        <module>trade-service</module>-->
+        <!--        <module>pay-service</module>-->
     </modules>
 
     <parent>
@@ -38,6 +41,7 @@
         <hm-common.version>1.0.0</hm-common.version>
         <hm-service.version>1.0.0</hm-service.version>
         <hm-api.version>1.0.0</hm-api.version>
+        <user-service.version>1.0.0</user-service.version>
     </properties>
 
     <!-- 对依赖包进行管理 -->
@@ -57,6 +61,11 @@
                 <groupId>com.heima</groupId>
                 <artifactId>hm-api</artifactId>
                 <version>${hm-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.heima</groupId>
+                <artifactId>user-service</artifactId>
+                <version>${user-service.version}</version>
             </dependency>
 
             <!--spring cloud-->
