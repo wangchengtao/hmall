@@ -12,7 +12,7 @@ spring:
     password: ${hm.db.pw}
   cloud:
     nacos:
-      server-addr: localhost:8848
+      server-addr: localhost
 mybatis-plus:
   configuration:
     default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
@@ -49,9 +49,3 @@ hm:
     alias: hmall
     password: hmall123
     tokenTTL: 30m
-  auth:
-    exclude-paths:
-      - /search/**
-      - /users/login
-      - /items/**
-      - /hi
