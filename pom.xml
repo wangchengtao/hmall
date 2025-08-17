@@ -38,6 +38,7 @@
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <hutool.version>5.8.11</hutool.version>
         <mysql.version>8.0.23</mysql.version>
+        <spring-cloud-alibaba-nacos-config.version>0.9.0.RELEASE</spring-cloud-alibaba-nacos-config.version>
 
         <hm-common.version>1.0.0</hm-common.version>
         <hm-service.version>1.0.0</hm-service.version>
@@ -96,6 +97,11 @@
                 <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${spring-cloud-alibaba-nacos-config.version}</version>
             </dependency>
             <!-- 数据库驱动包管理 -->
             <dependency>
