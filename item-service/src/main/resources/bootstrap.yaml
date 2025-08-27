@@ -1,15 +1,15 @@
 spring:
   application:
-    name: cart-service # 服务名称
+    name: item-service
   profiles:
     active: dev
   cloud:
     nacos:
-      server-addr: localhost # nacos地址
+      server-addr: localhost
       config:
-        file-extension: yaml # 文件后缀名
+        file-extension: yaml
         shared-configs: # 共享配置
           - dataId: shared-jdbc.yaml # 共享mybatis配置
           - dataId: shared-log.yaml # 共享日志配置
           - dataId: shared-swagger.yaml # 共享日志配置
-          - data-id: shared-seata.yaml
+          - dataId: shared-seata.yaml # 共享seata配置
