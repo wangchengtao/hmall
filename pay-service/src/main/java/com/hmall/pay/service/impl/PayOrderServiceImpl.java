@@ -38,7 +38,7 @@ public class PayOrderServiceImpl extends ServiceImpl<PayOrderMapper, PayOrder> i
     private final UserClient userClient;
 
     private final TradeClient tradeClient;
-    
+
     private final RabbitTemplate rabbitTemplate;
 
     @Override
@@ -75,6 +75,12 @@ public class PayOrderServiceImpl extends ServiceImpl<PayOrderMapper, PayOrder> i
         } catch (Exception e) {
             log.error("支付成功的消息发送失败, 支付单ID: {}, 交易 ID: {}", po.getId(), po.getBizOrderNo(), e);
         }
+    }
+
+    @Override
+    public void updateStatusByOrderId(Long orderId, int status) {
+        // TODO 幂等性
+        lambdaUpdate().set(PayOrder::getStatus, status).eq(PayOrder::getBizOrderNo, orderId).update();
     }
 
     public boolean markPayOrderSuccess(Long id, LocalDateTime successTime) {
