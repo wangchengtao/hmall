@@ -119,10 +119,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public void cancelOrder(Long orderId) {
-        // 取消订单
-        Order order = getById(orderId);
-        order.setStatus(5);
-        save(order);
+        // 取消订单 幂等性校验
+        lambdaUpdate().set(Order::getStatus, 5).eq(Order::getId, orderId).ne(Order::getStatus, 5).update();
 
         // 修改支付单状态为已取消
         payClient.updatePayOrderStatusByBizOrderNo(orderId, 5);

@@ -13,6 +13,6 @@ public interface PayClient {
     @GetMapping("/pay-orders/biz/{id}")
     PayOrderDTO queryPayOrderByBizOrderNo(@PathVariable("id") Long id);
 
-    @PutMapping("/status/{id}/{status}")
+    @PutMapping("/pay-orders/status/{id}/{status}")
     void updatePayOrderStatusByBizOrderNo(@PathVariable("id") Long orderId, @PathVariable("status") int status);
 }
