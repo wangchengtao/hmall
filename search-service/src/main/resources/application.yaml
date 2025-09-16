@@ -1,0 +1,17 @@
+server:
+  port: 8087
+  tomcat:
+    threads:
+      max: 50
+    accept-count: 50
+    max-connections: 100
+
+  hm:
+    swagger:
+      title: 商品搜索服务接口文档
+      package: com.hmall.search.controller
+
+
+spring:
+  elasticsearch:
+    uris: http://localhost:9200
