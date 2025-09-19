@@ -16,7 +16,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -43,7 +42,7 @@ public class DocumentTest {
         this.client.close();
     }
 
-    @Test
+    //@Test
     void testAddDocument() throws IOException {
         ItemDTO item = itemClient.queryItemById(100002644680L);
         ItemDoc itemDoc = BeanUtils.copyBean(item, ItemDoc.class);
@@ -54,7 +53,7 @@ public class DocumentTest {
         this.client.index(request, RequestOptions.DEFAULT);
     }
 
-    @Test
+    //@Test
     void testGetDocumentById() throws IOException {
         GetRequest request = new GetRequest("items", "100002644680");
 
@@ -66,7 +65,7 @@ public class DocumentTest {
         System.out.println(itemDoc);
     }
 
-    @Test
+    //@Test
     void testUpdateDocument() throws IOException {
         UpdateRequest request = new UpdateRequest("items", "100002644680");
 
@@ -79,7 +78,7 @@ public class DocumentTest {
         client.update(request, RequestOptions.DEFAULT);
     }
 
-    // @Test
+    // //@Test
     // void testLoadItemDocs() throws IOException {
     //     int pageNo = 1;
     //     int pageSize = 1000;

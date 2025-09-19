@@ -4,34 +4,37 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.heima</groupId>
-    <artifactId>hmall</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0.0</version>
-    <modules>
-        <module>hm-common</module>
-        <module>item-service</module>
-        <module>cart-service</module>
-        <module>hm-api</module>
-        <module>user-service</module>
-        <module>trade-service</module>
-        <module>pay-service</module>
-        <module>hm-gateway</module>
-        <module>search-service</module>
-    </modules>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.12</version>
-        <relativePath/>
     </parent>
 
+    <groupId>com.heima</groupId>
+    <artifactId>hmall</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>cart-service</module>
+        <module>hm-api</module>
+        <module>hm-common</module>
+        <module>hm-gateway</module>
+        <module>item-service</module>
+        <module>pay-service</module>
+        <module>search-service</module>
+        <module>trade-service</module>
+        <module>user-service</module>
+    </modules>
+
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+
         <org.projectlombok.version>1.18.20</org.projectlombok.version>
         <spring-cloud.version>2021.0.3</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.4.0</spring-cloud-alibaba.version>
@@ -40,45 +43,26 @@
         <mysql.version>8.0.23</mysql.version>
         <spring-cloud-alibaba-nacos-config.version>0.9.0.RELEASE</spring-cloud-alibaba-nacos-config.version>
         <elasticsearch.version>7.12.1</elasticsearch.version>
-
-        <hm-common.version>1.0.0</hm-common.version>
-        <hm-api.version>1.0.0</hm-api.version>
-        <user-service.version>1.0.0</user-service.version>
-        <trade-service.version>1.0.0</trade-service.version>
-        <pay-service.version>1.0.0</pay-service.version>
-        <search-service.version>1.0.0</search-service.version>
+        <knife4j-openapi2.version>4.1.0</knife4j-openapi2.version>
     </properties>
+
+    <dependencies>
+        <!-- lombok 管理 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <!--单元测试-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <!-- 对依赖包进行管理 -->
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.heima</groupId>
-                <artifactId>hm-common</artifactId>
-                <version>${hm-common.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.heima</groupId>
-                <artifactId>hm-api</artifactId>
-                <version>${hm-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.heima</groupId>
-                <artifactId>user-service</artifactId>
-                <version>${user-service.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.heima</groupId>
-                <artifactId>trade-service</artifactId>
-                <version>${trade-service.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.heima</groupId>
-                <artifactId>pay-service</artifactId>
-                <version>${pay-service.version}</version>
-            </dependency>
-
             <!--spring cloud-->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -95,23 +79,54 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-                <version>${spring-cloud-alibaba-nacos-config.version}</version>
+                <groupId>com.heima</groupId>
+                <artifactId>hm-common</artifactId>
+                <version>${project.version}</version>
             </dependency>
-            <!-- 数据库驱动包管理 -->
+
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
+                <groupId>com.heima</groupId>
+                <artifactId>hm-api</artifactId>
+                <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.heima</groupId>
+                <artifactId>user-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.heima</groupId>
+                <artifactId>trade-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.heima</groupId>
+                <artifactId>pay-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+
             <!-- mybatis plus 管理 -->
+            <!--region-->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-core</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <!--endregion-->
+
             <!--hutool工具包-->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -123,36 +138,36 @@
                 <artifactId>elasticsearch-rest-high-level-client</artifactId>
                 <version>${elasticsearch.version}</version>
             </dependency>
+
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.31</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-    <dependencies>
-        <!-- lombok 管理 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${org.projectlombok.version}</version>
-        </dependency>
-        <!--单元测试-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>dev</id>
+            <name>dev</name>
+            <url>file:///Users/summer/.m2/repository</url>
+        </repository>
+    </distributionManagement>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
-                    <configuration>
-                        <source>11</source> <!-- depending on your project -->
-                        <target>11</target> <!-- depending on your project -->
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source> <!-- depending on your project -->
+                    <target>${java.version}</target> <!-- depending on your project -->
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+
 </project>
