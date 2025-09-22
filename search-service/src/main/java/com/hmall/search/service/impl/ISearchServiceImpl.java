@@ -13,6 +13,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
 
@@ -32,12 +33,16 @@ public class ISearchServiceImpl implements ISearchService {
         SearchRequest request = new SearchRequest("items");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
-        sourceBuilder.query(QueryBuilders.matchAllQuery()); // 匹配所有
+        sourceBuilder.query(QueryBuilders.matchQuery("name", query.getKey())); // 匹配所有
 
-        int from = query.getPageNo() * query.getPageSize();
+        int from = (query.getPageNo() - 1) * query.getPageSize();
         sourceBuilder.from(from);
         sourceBuilder.size(query.getPageSize());
         sourceBuilder.sort("id", SortOrder.DESC);
+
+        HighlightBuilder highlightBuilder = new HighlightBuilder();
+        highlightBuilder.field("name").preTags("<em>").postTags("</em>");
+        sourceBuilder.highlighter(highlightBuilder);
 
         request.source(sourceBuilder);
 
@@ -50,6 +55,7 @@ public class ISearchServiceImpl implements ISearchService {
         for (SearchHit hit : response.getHits().getHits()) {
             String sourceAsString = hit.getSourceAsString();
             ItemDoc itemDoc = JSONUtil.toBean(sourceAsString, ItemDoc.class);
+            itemDoc.setName(hit.getHighlightFields().get("name").fragments()[0].string());
             items.add(itemDoc);
         }
 
