@@ -18,9 +18,13 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.lucene.search.function.CombineFunction;
+import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -68,16 +72,28 @@ public class ISearchServiceImpl implements ISearchService {
             queryBuilder.filter(QueryBuilders.rangeQuery("price").lte(query.getMaxPrice()));
         }
 
-        sourceBuilder.query(queryBuilder);
+        // 竞价排名
+        FunctionScoreQueryBuilder func = QueryBuilders.functionScoreQuery(
+                queryBuilder,
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
+                        new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                                QueryBuilders.termQuery("isAD", true),
+                                ScoreFunctionBuilders.weightFactorFunction(10.0f)
+                        )
+                });
+        func.scoreMode(FunctionScoreQuery.ScoreMode.SUM);
+        func.boostMode(CombineFunction.MULTIPLY);
+
+        sourceBuilder.query(func);
 
         int from = (query.getPageNo() - 1) * query.getPageSize();
         sourceBuilder.from(from);
         sourceBuilder.size(query.getPageSize());
-        sourceBuilder.sort(
-                query.getSortBy() == null ? "updateTime" : query.getSortBy(),
-                query.getIsAsc() ? SortOrder.ASC : SortOrder.DESC
-        );
 
+        if (StrUtil.isNotBlank(query.getSortBy())) {
+            sourceBuilder.sort(query.getSortBy(), query.getIsAsc() ? SortOrder.ASC : SortOrder.DESC);
+        }
+        
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name").preTags("<em>").postTags("</em>");
         sourceBuilder.highlighter(highlightBuilder);
@@ -87,13 +103,17 @@ public class ISearchServiceImpl implements ISearchService {
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);
 
         List<ItemDoc> items = new ArrayList<>();
-
         long totalHits = Objects.requireNonNull(response.getHits().getTotalHits()).value;
 
         for (SearchHit hit : response.getHits().getHits()) {
             String sourceAsString = hit.getSourceAsString();
             ItemDoc itemDoc = JSONUtil.toBean(sourceAsString, ItemDoc.class);
-            itemDoc.setName(hit.getHighlightFields().get("name").fragments()[0].string());
+
+            // 获取高亮字段
+            if (hit.getHighlightFields() != null && hit.getHighlightFields().containsKey("name")) {
+                itemDoc.setName(hit.getHighlightFields().get("name").fragments()[0].string());
+            }
+
             items.add(itemDoc);
         }
 

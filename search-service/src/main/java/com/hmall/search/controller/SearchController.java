@@ -28,10 +28,7 @@ public class SearchController {
     @ApiOperation("搜索商品")
     @GetMapping("/list")
     public PageDTO<ItemDoc> search(ItemPageQuery query) throws IOException {
-        // 分页查询
-        PageDTO<ItemDoc> dto = this.searchService.search(query);
-        // 封装并返回
-        return dto;
+        return this.searchService.search(query);
     }
 
     @ApiOperation("获取搜索条件")
