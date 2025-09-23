@@ -3,6 +3,8 @@ package com.hmall.api.client.fallback;
 import com.hmall.api.client.ItemClient;
 import com.hmall.api.dto.ItemDTO;
 import com.hmall.api.dto.OrderDetailDTO;
+import com.hmall.common.domain.PageDTO;
+import com.hmall.common.domain.PageQuery;
 import com.hmall.common.exception.BizIllegalException;
 import com.hmall.common.utils.CollUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,11 @@ public class ItemClientFallback implements FallbackFactory<ItemClient> {
 
             @Override
             public ItemDTO queryItemById(Long id) {
+                return null;
+            }
+
+            @Override
+            public PageDTO<ItemDTO> queryItemByPage(PageQuery query) {
                 return null;
             }
         };

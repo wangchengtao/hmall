@@ -4,7 +4,10 @@ package com.hmall.api.client;
 import com.hmall.api.client.fallback.ItemClientFallback;
 import com.hmall.api.dto.ItemDTO;
 import com.hmall.api.dto.OrderDetailDTO;
+import com.hmall.common.domain.PageDTO;
+import com.hmall.common.domain.PageQuery;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,5 +30,8 @@ public interface ItemClient {
 
     @GetMapping("/items/{id}")
     ItemDTO queryItemById(@PathVariable("id") Long id);
+
+    @GetMapping("/items/page")
+    public PageDTO<ItemDTO> queryItemByPage(@SpringQueryMap PageQuery query);
 
 }

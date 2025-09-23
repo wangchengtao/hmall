@@ -64,7 +64,7 @@ public class IndexTest {
         );
     }
 
-    //@Test
+    // @Test
     void testConnect() {
         System.out.println(client);
     }
@@ -74,7 +74,7 @@ public class IndexTest {
         this.client.close();
     }
 
-    //@Test
+    // @Test
     void testCreateIndex() throws IOException {
         CreateIndexRequest request = new CreateIndexRequest("items");
         request.source(MAPPING_TEMPLATE, XContentType.JSON);
@@ -89,7 +89,7 @@ public class IndexTest {
         System.out.println(exists ? "存在" : "不存在");
     }
 
-    //@Test
+    // @Test
     void testDeleteIndex() throws IOException {
         DeleteIndexRequest request = new DeleteIndexRequest("items");
         this.client.indices().delete(request, RequestOptions.DEFAULT);
