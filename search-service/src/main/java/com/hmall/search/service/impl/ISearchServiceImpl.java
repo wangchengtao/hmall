@@ -1,5 +1,6 @@
 package com.hmall.search.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.hmall.api.client.ItemClient;
 import com.hmall.api.dto.ItemDTO;
@@ -18,6 +19,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -45,12 +47,36 @@ public class ISearchServiceImpl implements ISearchService {
         SearchRequest request = new SearchRequest("items");
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
-        sourceBuilder.query(QueryBuilders.matchQuery("name", query.getKey())); // 匹配所有
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        if (StrUtil.isNotBlank(query.getKey())) {
+            queryBuilder.must(QueryBuilders.matchQuery("name", query.getKey()));
+        }
+
+        if (StrUtil.isNotBlank(query.getBrand())) {
+            queryBuilder.filter(QueryBuilders.termQuery("brand", query.getBrand()));
+        }
+
+        if (StrUtil.isNotBlank(query.getCategory())) {
+            queryBuilder.filter(QueryBuilders.termQuery("category", query.getCategory()));
+        }
+
+        if (query.getMinPrice() != null) {
+            queryBuilder.filter().add(QueryBuilders.rangeQuery("price").gte(query.getMinPrice()));
+        }
+
+        if (query.getMaxPrice() != null) {
+            queryBuilder.filter(QueryBuilders.rangeQuery("price").lte(query.getMaxPrice()));
+        }
+
+        sourceBuilder.query(queryBuilder);
 
         int from = (query.getPageNo() - 1) * query.getPageSize();
         sourceBuilder.from(from);
         sourceBuilder.size(query.getPageSize());
-        sourceBuilder.sort("id", SortOrder.DESC);
+        sourceBuilder.sort(
+                query.getSortBy() == null ? "updateTime" : query.getSortBy(),
+                query.getIsAsc() ? SortOrder.ASC : SortOrder.DESC
+        );
 
         HighlightBuilder highlightBuilder = new HighlightBuilder();
         highlightBuilder.field("name").preTags("<em>").postTags("</em>");
